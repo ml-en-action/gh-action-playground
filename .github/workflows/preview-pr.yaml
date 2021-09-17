@@ -1,0 +1,47 @@
+name: preview-pr
+on:
+  workflow_run:
+    workflows:
+      - build-pr
+    types:
+      - completed
+jobs:
+  deploy:
+    if: github.repository == 'ml-en-action/gh-action-playground'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set message value
+        run: |
+          echo "comment_message=This pull request is being automatically built with GitHub Action + Netlify. To see the status of your deployment, click below." >> $GITHUB_ENV
+
+      - name: Find Pull Request
+        uses: juliangruber/find-pull-request-action@v1
+        id: find-pull-request
+        with:
+          branch: ${{ github.event.workflow_run.head_branch }}
+
+      - name: Find Comment
+        uses: peter-evans/find-comment@v1
+        if: steps.find-pull-request.outputs.number  != ''
+        id: fc
+        with:
+          issue-number: '${{ steps.find-pull-request.outputs.number }}'
+          comment-author: 'github-actions[bot]'
+          body-includes: '${{ env.comment_message }}'
+
+      - name: Update Jupyter Book Preview comment
+        if: steps.fc.outputs.comment-id != ''
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          edit-mode: replace
+          body: |
+            ${{ env.comment_message }}
+
+            📚 Git commit SHA:  ${{ steps.find-pull-request.outputs.head-sha }}
+            ✅ Deployment Preview URL: https://github.com/
