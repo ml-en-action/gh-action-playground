@@ -34,6 +34,10 @@ jobs:
           comment-author: 'github-actions[bot]'
           body-includes: '${{ env.comment_message }}'
 
+      - name: Logs
+        run: |
+          echo ${{ steps.fc.outputs.comment-id }}, ${{ steps.find-pull-request.outputs.head-sha }}
+
       - name: Update Jupyter Book Preview comment
         if: steps.fc.outputs.comment-id != ''
         uses: peter-evans/create-or-update-comment@v1
