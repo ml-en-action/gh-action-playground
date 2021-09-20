@@ -5,7 +5,7 @@ on:
       - build-pr
     types:
       - completed
-      - requested
+      - pre-flight
 jobs:
   deploy:
     if: github.repository == 'ml-en-action/gh-action-playground'
@@ -34,19 +34,21 @@ jobs:
               if(pullRequest.head.sha === context.payload.workflow_run.head_commit.id) {
                   pullRequestHeadSHA = pullRequest.head.sha
                   pullRequestNumber = pullRequest.number
-                  return {pullRequestNumber, pullRequestHeadSHA}
+
               }
             }
-            return {pullRequestNumber, pullRequestHeadSHA}
+            return {number: pullRequestNumber, sha: pullRequestHeadSHA}
       - name: Get result
-        run: echo "${{steps.find-pull-request.outputs.result}}"
+        run: |
+          echo "${{ steps.find-pull-request.outputs.result }}"
+          echo "{{ steps.find-pull-request.outputs.result.number }}"
 
       - name: Find Comment
         uses: peter-evans/find-comment@v1
-        if: steps.find-pull-request.outputs.result.pullRequestNumber  != ''
+        if: steps.find-pull-request.outputs.result.number != ''
         id: fc
         with:
-          issue-number: '${{ steps.find-pull-request.outputs.result.pullRequestNumber }}'
+          issue-number: '${{ steps.find-pull-request.outputs.result.number }}'
           comment-author: 'github-actions[bot]'
           body-includes: '${{ env.comment_message }}'
 
@@ -56,11 +58,11 @@ jobs:
           && steps.fc.outputs.comment-id == ''
         uses: peter-evans/create-or-update-comment@v1
         with:
-          issue-number: ${{ steps.find-pull-request.outputs.result.pullRequestNumber }}
+          issue-number: ${{ steps.find-pull-request.outputs.result.number }}
           body: |
             ${{ env.comment_message }}
 
-            🚧 Deployment in progress for git commit SHA: ${{ steps.find-pull-request.outputs.result.pullRequestHeadSHA }}
+            🚧 Deployment in progress for git commit SHA: ${{ steps.find-pull-request.outputs.result.number }}
 
       - name: Update comment
         if: |
@@ -74,7 +76,7 @@ jobs:
           body: |
             ${{ env.comment_message }}
 
-            🚧 Deployment in progress for git commit SHA: ${{ steps.find-pull-request.outputs.result.pullRequestHeadSHA }}
+            🚧 Deployment in progress for git commit SHA: ${{ steps.find-pull-request.outputs.result.sha }}
 
       - name: Update Jupyter Book Preview comment
         if: |
@@ -87,5 +89,5 @@ jobs:
           body: |
             ${{ env.comment_message }}
 
-            📚 Git commit SHA:  ${{ steps.find-pull-request.outputs.result.pullRequestHeadSHA }}
+            📚 Git commit SHA:  ${{ steps.find-pull-request.outputs.result.sha }}
             ✅ Deployment Preview URL: https://github.com/
