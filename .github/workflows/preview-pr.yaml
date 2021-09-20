@@ -50,7 +50,7 @@ jobs:
               )
             }
             else{
-              core.debug(`Found pull request ${pullRequestNumber}`)
+              core.info(`Found pull request ${pullRequestNumber}, with head sha: ${pullRequestHeadSHA}`)
             }
 
             core.info(`workflow payload: ${JSON.stringify(context.payload, null, 2)}`)
@@ -105,5 +105,6 @@ jobs:
           body: |
             ${{ env.comment_message }}
 
+            🔍 Inspect GitHub Workflow Run:${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
             📚 Git commit SHA:  ${{ steps.find-pull-request.outputs.sha }}
             ✅ Deployment Preview URL: https://github.com/
