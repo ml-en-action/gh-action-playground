@@ -50,7 +50,7 @@ jobs:
               )
             }
             else{
-              core.debug(`Found pull request ${pullRequestNumber}`)
+              core.info(`Found pull request ${pullRequestNumber}, with head sha: ${pullRequestHeadSHA}`)
             }
 
             core.info(`workflow payload: ${JSON.stringify(context.payload, null, 2)}`)
@@ -72,6 +72,7 @@ jobs:
       - name: Create comment
         if: |
           github.event.workflow_run.conclusion != 'success'
+          && steps.find-pull-request.outputs.number != ''
           && steps.fc.outputs.comment-id == ''
         uses: peter-evans/create-or-update-comment@v1
         with:
@@ -84,6 +85,7 @@ jobs:
       - name: Update comment
         if: |
           github.event.workflow_run.conclusion != 'success'
+          && steps.find-pull-request.outputs.number != ''
           && steps.fc.outputs.comment-id != ''
         uses: peter-evans/create-or-update-comment@v1
         with:
@@ -97,6 +99,7 @@ jobs:
       - name: Update Jupyter Book Preview comment
         if: |
           github.event.workflow_run.conclusion == 'success'
+          && steps.find-pull-request.outputs.number != ''
           && steps.fc.outputs.comment-id != ''
         uses: peter-evans/create-or-update-comment@v1
         with:
@@ -105,5 +108,6 @@ jobs:
           body: |
             ${{ env.comment_message }}
 
+            🔍 Inspect GitHub Workflow Run:${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
             📚 Git commit SHA:  ${{ steps.find-pull-request.outputs.sha }}
             ✅ Deployment Preview URL: https://github.com/
