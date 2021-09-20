@@ -34,10 +34,9 @@ jobs:
               if(pullRequest.head.sha === context.payload.workflow_run.head_commit.id) {
                   pullRequestHeadSHA = pullRequest.head.sha
                   pullRequestNumber = pullRequest.number
-                  break
+                  return {pullRequestNumber, pullRequestHeadSHA}
               }
             }
-            console.log(pullRequestNumber, pullRequestHeadSHA)
             return {pullRequestNumber, pullRequestHeadSHA}
       - name: Get result
         run: echo "${{steps.find-pull-request.outputs.result}}"
