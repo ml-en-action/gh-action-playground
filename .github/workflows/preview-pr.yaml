@@ -18,7 +18,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: Set message value
         run: |
-          echo "comment_message=This pull request is being automatically built with GitHub Action + Netlify. To see the status of your deployment, click below." >> $GITHUB_ENV
+          echo "comment_message=This pull request is being automatically built with [GitHub Actions](https://github.com/features/actions) and [Netlify](https://www.netlify.com/).
+          To see the status of your deployment, click below." >> $GITHUB_ENV
 
       - name: Find Pull Request
         uses: actions/github-script@v4
