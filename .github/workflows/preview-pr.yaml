@@ -28,7 +28,8 @@ jobs:
             let pullRequestNumber = ''
             let pullRequestHeadSHA = ''
 
-            core.debug('Finding pull request...')
+            core.info('Finding pull request...')
+            core.info(context.payload.worflow_run)
             const pullRequests = await github.pulls.list({owner: context.repo.owner, repo: context.repo.repo})
             for (let pullRequest of pullRequests.data) {
 
@@ -76,7 +77,7 @@ jobs:
           body: |
             ${{ env.comment_message }}
 
-            🚧 Deployment in progress for git commit SHA: ${{ steps.find-pull-request.outputs.number }}
+            🚧 Deployment in progress for git commit SHA: ${{ steps.find-pull-request.outputs.sha }}
 
       - name: Update comment
         if: |
