@@ -27,11 +27,6 @@ jobs:
             const pullRequests = github.pulls.list({owner: context.repo.owner, repo: context.repo.repo})
             console.log(pullRequests)
 
-        # with:
-        #   branch: ${{ github.event.workflow_run.head_branch }}
-
-      - name:
-
       - name: Find Comment
         uses: peter-evans/find-comment@v1
         if: steps.find-pull-request.outputs.number  != ''
