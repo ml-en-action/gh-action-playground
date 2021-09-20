@@ -25,6 +25,10 @@ jobs:
         with:
           branch: ${{ github.event.workflow_run.head_branch }}
 
+      - name: Logs
+        run: |
+          echo ${{ steps.fc.outputs.comment-id }}, ${{ steps.find-pull-request.outputs.number }}, ${{ steps.find-pull-request.outputs.head-sha }}
+
       - name: Find Comment
         uses: peter-evans/find-comment@v1
         if: steps.find-pull-request.outputs.number  != ''
