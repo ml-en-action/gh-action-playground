@@ -108,6 +108,5 @@ jobs:
           body: |
             ${{ env.comment_message }}
 
-            🔍 Inspect GitHub Workflow Run:${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-            📚 Git commit SHA:  ${{ steps.find-pull-request.outputs.sha }}
+            🔍 Git commit SHA:  ${{ steps.find-pull-request.outputs.sha }}
             ✅ Deployment Preview URL: https://github.com/
