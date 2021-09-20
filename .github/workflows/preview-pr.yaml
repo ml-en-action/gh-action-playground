@@ -35,7 +35,7 @@ jobs:
               if(pullRequest.head.sha === context.payload.workflow_run.head_commit.id) {
                   pullRequestHeadSHA = pullRequest.head.sha
                   pullRequestNumber = pullRequest.number
-                  core.debug(`Found pull request ${pullRequestNumber}`)
+                  break
 
               }
             }
@@ -43,10 +43,13 @@ jobs:
             core.setOutput('number', pullRequestNumber)
             core.setOutput('sha', pullRequestHeadSHA)
 
-            if pullRequestNumber === '' {
+            if(pullRequestNumber === '') {
               core.info(
                  `No pull request associated with git commit SHA: ${context.payload.workflow_run.head_commit.id}`
               )
+            }
+            else{
+              core.debug(`Found pull request ${pullRequestNumber}`)
             }
 
       - name: Get result
