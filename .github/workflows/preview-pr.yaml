@@ -29,7 +29,7 @@ jobs:
             let pullRequestHeadSHA = ''
 
             core.info('Finding pull request...')
-            core.info(context.payload.worflow_run)
+            core.info(context.payload.workflow_run)
             const pullRequests = await github.pulls.list({owner: context.repo.owner, repo: context.repo.repo})
             for (let pullRequest of pullRequests.data) {
 
@@ -52,6 +52,8 @@ jobs:
             else{
               core.debug(`Found pull request ${pullRequestNumber}`)
             }
+
+            core.info(context.payload)
 
       - name: Get result
         run: |
