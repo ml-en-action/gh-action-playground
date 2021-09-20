@@ -10,5 +10,3 @@ pyupgrade = 1
 
 [tool.nbqa.addopts]
 pyupgrade = ["--py36-plus"]
-
-
