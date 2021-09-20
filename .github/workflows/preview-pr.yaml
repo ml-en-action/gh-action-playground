@@ -41,7 +41,7 @@ jobs:
       - name: Get result
         run: |
           echo "${{ steps.find-pull-request.outputs.result }}"
-          echo "{{ steps.find-pull-request.outputs.result.number }}"
+          echo "${{ steps.find-pull-request.outputs.result.number }}"
 
       - name: Find Comment
         uses: peter-evans/find-comment@v1
