@@ -5,7 +5,8 @@ on:
       - build-pr
     types:
       - completed
-      - pre-flight
+      - requested
+
 jobs:
   deploy:
     if: github.repository == 'ml-en-action/gh-action-playground'
@@ -27,28 +28,38 @@ jobs:
             let pullRequestNumber = ''
             let pullRequestHeadSHA = ''
 
-            console.log('Finding pull request...')
+            core.debug('Finding pull request...')
             const pullRequests = await github.pulls.list({owner: context.repo.owner, repo: context.repo.repo})
             for (let pullRequest of pullRequests.data) {
 
               if(pullRequest.head.sha === context.payload.workflow_run.head_commit.id) {
                   pullRequestHeadSHA = pullRequest.head.sha
                   pullRequestNumber = pullRequest.number
+                  core.debug(`Found pull request ${pullRequestNumber}`)
 
               }
             }
-            return {number: pullRequestNumber, sha: pullRequestHeadSHA}
+
+            core.setOutput('number', pullRequestNumber)
+            core.setOutput('sha', pullRequestHeadSHA)
+
+            if pullRequestNumber === '' {
+              core.info(
+                 `No pull request associated with git commit SHA: ${context.payload.workflow_run.head_commit.id}`
+              )
+            }
+
       - name: Get result
         run: |
-          echo "${{ steps.find-pull-request.outputs.result }}"
-          echo "${{ steps.find-pull-request.outputs.result.number }}"
+          echo "${{ steps.find-pull-request.outputs.number }}"
+          echo "${{ steps.find-pull-request.outputs.sha }}"
 
       - name: Find Comment
         uses: peter-evans/find-comment@v1
-        if: steps.find-pull-request.outputs.result.number != ''
+        if: steps.find-pull-request.outputs.number != ''
         id: fc
         with:
-          issue-number: '${{ steps.find-pull-request.outputs.result.number }}'
+          issue-number: '${{ steps.find-pull-request.outputs.number }}'
           comment-author: 'github-actions[bot]'
           body-includes: '${{ env.comment_message }}'
 
@@ -58,11 +69,11 @@ jobs:
           && steps.fc.outputs.comment-id == ''
         uses: peter-evans/create-or-update-comment@v1
         with:
-          issue-number: ${{ steps.find-pull-request.outputs.result.number }}
+          issue-number: ${{ steps.find-pull-request.outputs.number }}
           body: |
             ${{ env.comment_message }}
 
-            🚧 Deployment in progress for git commit SHA: ${{ steps.find-pull-request.outputs.result.number }}
+            🚧 Deployment in progress for git commit SHA: ${{ steps.find-pull-request.outputs.number }}
 
       - name: Update comment
         if: |
@@ -76,7 +87,7 @@ jobs:
           body: |
             ${{ env.comment_message }}
 
-            🚧 Deployment in progress for git commit SHA: ${{ steps.find-pull-request.outputs.result.sha }}
+            🚧 Deployment in progress for git commit SHA: ${{ steps.find-pull-request.outputs.sha }}
 
       - name: Update Jupyter Book Preview comment
         if: |
@@ -89,5 +100,5 @@ jobs:
           body: |
             ${{ env.comment_message }}
 
-            📚 Git commit SHA:  ${{ steps.find-pull-request.outputs.result.sha }}
+            📚 Git commit SHA:  ${{ steps.find-pull-request.outputs.sha }}
             ✅ Deployment Preview URL: https://github.com/
