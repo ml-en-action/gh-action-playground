@@ -72,6 +72,7 @@ jobs:
       - name: Create comment
         if: |
           github.event.workflow_run.conclusion != 'success'
+          && steps.find-pull-request.outputs.number != ''
           && steps.fc.outputs.comment-id == ''
         uses: peter-evans/create-or-update-comment@v1
         with:
@@ -84,6 +85,7 @@ jobs:
       - name: Update comment
         if: |
           github.event.workflow_run.conclusion != 'success'
+          && steps.find-pull-request.outputs.number != ''
           && steps.fc.outputs.comment-id != ''
         uses: peter-evans/create-or-update-comment@v1
         with:
@@ -97,6 +99,7 @@ jobs:
       - name: Update Jupyter Book Preview comment
         if: |
           github.event.workflow_run.conclusion == 'success'
+          && steps.find-pull-request.outputs.number != ''
           && steps.fc.outputs.comment-id != ''
         uses: peter-evans/create-or-update-comment@v1
         with:
