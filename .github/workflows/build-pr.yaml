@@ -13,48 +13,8 @@ jobs:
         shell: bash -l {0}
     if: github.repository == 'ml-en-action/gh-action-playground'
     steps:
-      - uses: tibdex/github-app-token@v1.4.0
-        if: github.event_name == 'pull_request'
-        id: generate-token
-        with:
-          app_id: ${{ secrets.COMMENTER_APP_ID }}
-          private_key: ${{ secrets.COMMENTER_APP_PRIVATE_KEY }}
-      - name: Set message value
-        run: |
-          echo "comment_message=This pull request is being automatically built with GitHub Action + Netlify. To see the status of your deployment, click below." >> $GITHUB_ENV
-      - name: Find Comment
-        if: github.event_name == 'pull_request'
-        uses: peter-evans/find-comment@v1
-        id: fc
-        with:
-          issue-number: '${{ github.event.number }}'
-          comment-author: 'github-actions[bot]'
-          body-includes: '${{ env.comment_message }}'
-      - name: Create comment
-        if: |
-          github.event_name == 'pull_request'
-          && steps.fc.outputs.comment-id == ''
-        uses: peter-evans/create-or-update-comment@v1
-        with:
-          token: ${{ steps.generate-token.outputs.token }}
-          issue-number: ${{ github.event.number }}
-          body: |
-            ${{ env.comment_message }}
-
-            🚧 Deployment in progress for git commit SHA: ${{ github.event.pull_request.head.sha }}
-
-      - name: Update comment
-        if: |
-          github.event_name == 'pull_request'
-          && steps.fc.outputs.comment-id != ''
-        uses: peter-evans/create-or-update-comment@v1
-        with:
-          token: ${{ steps.generate-token.outputs.token }}
-          comment-id: ${{ steps.fc.outputs.comment-id }}
-          edit-mode: replace
-          body: |
-            ${{ env.comment_message }}
-
-            🚧 Deployment in progress for git commit SHA: ${{ github.event.pull_request.head.sha }}
-
       - uses: actions/checkout@v2
+      - name: Building Book
+        run: |
+          echo "Building Book"
+          sleep 10
