@@ -24,8 +24,20 @@ jobs:
         id: find-pull-request
         with:
           script: |
+            let foundPR = false
+            let pullRequestNumber = undefined
+            let pullRequestHeadSHA = undefined
+
             const pullRequests = await github.pulls.list({owner: context.repo.owner, repo: context.repo.repo})
-            console.log(pullRequests)
+            for (let pullRequest of pullRequests.data) {
+              if(pullRequest.head.sha === github.event.workflow_run.head_commit.id) {
+                  foundPR = true
+                  pullRequestHeadSHA = pullRequest.head.sha
+                  pullRequestNumber = pullRequest.number
+                  break
+              }
+            }
+            console.log(foundPR, pullRequestNumber, pullRequestHeadSHA)
 
       - name: Find Comment
         uses: peter-evans/find-comment@v1
