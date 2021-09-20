@@ -5,6 +5,7 @@ on:
       - build-pr
     types:
       - completed
+      - requested
 jobs:
   deploy:
     if: github.repository == 'ml-en-action/gh-action-playground'
@@ -14,7 +15,6 @@ jobs:
         shell: bash
     steps:
       - uses: actions/checkout@v2
-
       - name: Set message value
         run: |
           echo "comment_message=This pull request is being automatically built with GitHub Action + Netlify. To see the status of your deployment, click below." >> $GITHUB_ENV
@@ -25,6 +25,10 @@ jobs:
         with:
           branch: ${{ github.event.workflow_run.head_branch }}
 
+      - name: Logs
+        run: |
+          echo ${{ steps.fc.outputs.comment-id }}, ${{ steps.find-pull-request.outputs.number }}, ${{ steps.find-pull-request.outputs.head-sha }}
+
       - name: Find Comment
         uses: peter-evans/find-comment@v1
         if: steps.find-pull-request.outputs.number  != ''
@@ -34,12 +38,40 @@ jobs:
           comment-author: 'github-actions[bot]'
           body-includes: '${{ env.comment_message }}'
 
+      - name: Create comment
+        if: |
+          github.event.workflow_run.conclusion != 'success'
+          && steps.fc.outputs.comment-id == ''
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ steps.find-pull-request.outputs.number }}
+          body: |
+            ${{ env.comment_message }}
+
+            🚧 Deployment in progress for git commit SHA: ${{ steps.find-pull-request.outputs.head-sha }}
+
+      - name: Update comment
+        if: |
+          github.event.workflow_run.conclusion != 'success'
+          && steps.fc.outputs.comment-id != ''
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          edit-mode: replace
+          body: |
+            ${{ env.comment_message }}
+
+            🚧 Deployment in progress for git commit SHA: ${{ steps.find-pull-request.outputs.head-sha }}
+
       - name: Logs
         run: |
           echo ${{ steps.fc.outputs.comment-id }}, ${{ steps.find-pull-request.outputs.head-sha }}
 
       - name: Update Jupyter Book Preview comment
-        if: steps.fc.outputs.comment-id != ''
+        if: |
+          github.event.workflow_run.conclusion == 'success'
+          && steps.fc.outputs.comment-id != ''
         uses: peter-evans/create-or-update-comment@v1
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
