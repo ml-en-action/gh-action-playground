@@ -87,7 +87,6 @@ jobs:
           && steps.fc.outputs.comment-id != ''
         uses: peter-evans/create-or-update-comment@v1
         with:
-          token: ${{ steps.generate-token.outputs.token }}
           comment-id: ${{ steps.fc.outputs.comment-id }}
           edit-mode: replace
           body: |
