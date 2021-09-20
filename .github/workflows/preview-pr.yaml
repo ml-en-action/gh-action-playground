@@ -25,8 +25,8 @@ jobs:
         with:
           script: |
             let foundPR = false
-            let pullRequestNumber = undefined
-            let pullRequestHeadSHA = undefined
+            let pullRequestNumber = ''
+            let pullRequestHeadSHA = ''
 
             const pullRequests = await github.pulls.list({owner: context.repo.owner, repo: context.repo.repo})
             for (let pullRequest of pullRequests.data) {
@@ -43,16 +43,12 @@ jobs:
 
       - name: Find Comment
         uses: peter-evans/find-comment@v1
-        if: steps.find-pull-request.outputs.number  != ''
+        if: steps.find-pull-request.outputs.result.foundPR  === true
         id: fc
         with:
-          issue-number: '${{ steps.find-pull-request.outputs.number }}'
+          issue-number: '${{ steps.find-pull-request.outputs.result.pullRequestNumber }}'
           comment-author: 'github-actions[bot]'
           body-includes: '${{ env.comment_message }}'
-
-      - name: Logs
-        run: |
-          echo ${{ steps.fc.outputs.comment-id }}, ${{ steps.find-pull-request.outputs.number }}, ${{ steps.find-pull-request.outputs.head-sha }}
 
       - name: Create comment
         if: |
@@ -60,11 +56,11 @@ jobs:
           && steps.fc.outputs.comment-id == ''
         uses: peter-evans/create-or-update-comment@v1
         with:
-          issue-number: ${{ steps.find-pull-request.outputs.number }}
+          issue-number: ${{ steps.find-pull-request.outputs.result.pullRequestNumber }}
           body: |
             ${{ env.comment_message }}
 
-            🚧 Deployment in progress for git commit SHA: ${{ steps.find-pull-request.outputs.head-sha }}
+            🚧 Deployment in progress for git commit SHA: ${{ steps.find-pull-request.outputs.result.pullRequestHeadSHA }}
 
       - name: Update comment
         if: |
@@ -78,11 +74,7 @@ jobs:
           body: |
             ${{ env.comment_message }}
 
-            🚧 Deployment in progress for git commit SHA: ${{ steps.find-pull-request.outputs.head-sha }}
-
-      - name: Logs
-        run: |
-          echo ${{ steps.fc.outputs.comment-id }}, ${{ steps.find-pull-request.outputs.head-sha }}
+            🚧 Deployment in progress for git commit SHA: ${{ steps.find-pull-request.outputs.result.pullRequestHeadSHA }}
 
       - name: Update Jupyter Book Preview comment
         if: |
@@ -95,5 +87,5 @@ jobs:
           body: |
             ${{ env.comment_message }}
 
-            📚 Git commit SHA:  ${{ steps.find-pull-request.outputs.head-sha }}
+            📚 Git commit SHA:  ${{ steps.find-pull-request.outputs.result.pullRequestHeadSHA }}
             ✅ Deployment Preview URL: https://github.com/
