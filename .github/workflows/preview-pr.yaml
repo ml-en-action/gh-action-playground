@@ -24,7 +24,7 @@ jobs:
         id: find-pull-request
         with:
           script: |
-            const pullRequests = github.pulls.list({owner: context.repo.owner, repo: context.repo.repo})
+            const pullRequests = await github.pulls.list({owner: context.repo.owner, repo: context.repo.repo})
             console.log(pullRequests)
 
       - name: Find Comment
