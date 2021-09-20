@@ -38,9 +38,11 @@ jobs:
                   foundPR = true
                   pullRequestHeadSHA = pullRequest.head.sha
                   pullRequestNumber = pullRequest.number
+                  console.log(foundPR, pullRequestNumber, pullRequestHeadSHA)
                   break
               }
             }
+            console.log(foundPR, pullRequestNumber, pullRequestHeadSHA)
             return {foundPR, pullRequestNumber, pullRequestHeadSHA}
       - name: Get result
         run: echo "${{steps.find-pull-request.outputs.result}}"
