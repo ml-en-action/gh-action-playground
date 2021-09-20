@@ -43,7 +43,7 @@ jobs:
 
       - name: Find Comment
         uses: peter-evans/find-comment@v1
-        if: steps.find-pull-request.outputs.result.foundPR  === true
+        if: steps.find-pull-request.outputs.result.foundPR  == true
         id: fc
         with:
           issue-number: '${{ steps.find-pull-request.outputs.result.pullRequestNumber }}'
