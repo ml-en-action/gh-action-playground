@@ -28,8 +28,12 @@ jobs:
             let pullRequestNumber = ''
             let pullRequestHeadSHA = ''
 
+            console.log('Finding pull request...')
+            console.log(context.payload.workflow_run.head_commit.id)
+
             const pullRequests = await github.pulls.list({owner: context.repo.owner, repo: context.repo.repo})
             for (let pullRequest of pullRequests.data) {
+              console.log(pullRequest.head.sha)
               if(pullRequest.head.sha === context.payload.workflow_run.head_commit.id) {
                   foundPR = true
                   pullRequestHeadSHA = pullRequest.head.sha
