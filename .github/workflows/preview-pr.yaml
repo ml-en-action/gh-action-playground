@@ -18,10 +18,10 @@ jobs:
       - uses: actions/checkout@v2
       - name: Set message value
         run: |
-          echo "comment_message=This pull request is being automatically built with GitHub Action + Netlify. To see the status of your deployment, click below." >> $GITHUB_ENV
+          echo "comment_message=This pull request is being automatically built with [GitHub Actions](https://github.com/features/actions) and [Netlify](https://www.netlify.com/). To see the status of your deployment, click below." >> $GITHUB_ENV
 
       - name: Find Pull Request
-        uses: actions/github-script@v4
+        uses: actions/github-script@v5
         id: find-pull-request
         with:
           script: |
@@ -50,7 +50,7 @@ jobs:
               )
             }
             else{
-              core.debug(`Found pull request ${pullRequestNumber}`)
+              core.info(`Found pull request ${pullRequestNumber}, with head sha: ${pullRequestHeadSHA}`)
             }
 
             core.info(`workflow payload: ${JSON.stringify(context.payload, null, 2)}`)
@@ -72,6 +72,7 @@ jobs:
       - name: Create comment
         if: |
           github.event.workflow_run.conclusion != 'success'
+          && steps.find-pull-request.outputs.number != ''
           && steps.fc.outputs.comment-id == ''
         uses: peter-evans/create-or-update-comment@v1
         with:
@@ -84,10 +85,10 @@ jobs:
       - name: Update comment
         if: |
           github.event.workflow_run.conclusion != 'success'
+          && steps.find-pull-request.outputs.number != ''
           && steps.fc.outputs.comment-id != ''
         uses: peter-evans/create-or-update-comment@v1
         with:
-          token: ${{ steps.generate-token.outputs.token }}
           comment-id: ${{ steps.fc.outputs.comment-id }}
           edit-mode: replace
           body: |
@@ -98,6 +99,7 @@ jobs:
       - name: Update Jupyter Book Preview comment
         if: |
           github.event.workflow_run.conclusion == 'success'
+          && steps.find-pull-request.outputs.number != ''
           && steps.fc.outputs.comment-id != ''
         uses: peter-evans/create-or-update-comment@v1
         with:
@@ -106,5 +108,5 @@ jobs:
           body: |
             ${{ env.comment_message }}
 
-            📚 Git commit SHA:  ${{ steps.find-pull-request.outputs.sha }}
+            🔍 Git commit SHA:  ${{ steps.find-pull-request.outputs.sha }}
             ✅ Deployment Preview URL: https://github.com/
