@@ -14,10 +14,10 @@ jobs:
         id: find-issue
         with:
           script: |
-            const creator = 'andersy005'
+            const creator = 'github-actions[bot]'
             const issueLabel = 'CI'
             const workflow_url = `https://github.com/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`
-
+            let foundIssue = false
             const issues = await github.rest.issues.listForRepo({owner: context.repo.owner, repo: context.repo.repo})
             for (let issue of issues.data) {
               if (issue.user.login === creator && issue.state === 'open' && issue.labels.some(label => label.name === issueLabel)) {
@@ -27,6 +27,16 @@ jobs:
                 issue_number: issue.number,
                 body: `${workflow_url}`
                 })
+                foundIssue = true
                 break
               }
+            }
+
+            if (!foundIssue) {
+              const issue = await github.rest.issues.create({owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'CI',
+              body: `${workflow_url}`
+              })
+              core.info(`${issue.number} - ${issue.state} - ${issue.title} - ${issue.body} - ${issue.user.login}`)
             }
