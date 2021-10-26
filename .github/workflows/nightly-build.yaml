@@ -16,8 +16,5 @@ jobs:
           script: |
             const issues = await github.rest.issues.listForRepo({owner: context.repo.owner, repo: context.repo.repo})
             for (let issue of issues.data) {
-
-                core.info(`${issue.number} - ${issue.title}`)
-
-
+                core.info(`${issue.number} - ${issue.state} - ${issue.title} - ${issue.body} - ${issue.user.login}`)
             }
