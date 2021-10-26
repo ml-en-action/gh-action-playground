@@ -1,0 +1,11 @@
+name: nightly-build
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  nightly-build:
+    name: nightly-build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
