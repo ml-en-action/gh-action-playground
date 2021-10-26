@@ -14,19 +14,22 @@ jobs:
         id: find-issue
         with:
           script: |
+            const title = "⚠️ Nightly Build failed ⚠️"
             const creator = 'github-actions[bot]'
             const issueLabel = 'CI'
             const workflow_url = `https://github.com/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`
+            const issue_body = `[Workflow Run URL](${workflow_url})`
+
             let foundIssue = false
             const issues = await github.rest.issues.listForRepo({owner: context.repo.owner, repo: context.repo.repo})
             for (let issue of issues.data) {
               if (issue.user.login === creator && issue.state === 'open' && issue.labels.some(label => label.name === issueLabel)) {
-                core.info(`${issue.number} - ${issue.state} - ${issue.title} - ${issue.body} - ${issue.user.login}`)
                 github.rest.issues.update({owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: issue.number,
                 body: `${workflow_url}`
                 })
+                core.info(`Updated an existing issue: ${issue.number}.`)
                 foundIssue = true
                 break
               }
@@ -35,8 +38,9 @@ jobs:
             if (!foundIssue) {
               const issue = await github.rest.issues.create({owner: context.repo.owner,
               repo: context.repo.repo,
-              title: 'CI',
-              body: `${workflow_url}`
+              title: title,
+              body: issue_body
+              labels: [issueLabel]
               })
-              core.info(`${issue.number} - ${issue.state} - ${issue.title} - ${issue.body} - ${issue.user.login}`)
+              core.info(`Opened a new issue: ${issue.number}`)
             }
