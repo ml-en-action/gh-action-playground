@@ -16,7 +16,7 @@ jobs:
           this is not
 
       - name: Status
-        if: steps.build.status == 'success'
+        if: steps.build.status != 'success'
         run: |
           echo "Build succeeded"
 
