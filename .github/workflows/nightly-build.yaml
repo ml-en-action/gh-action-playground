@@ -15,17 +15,12 @@ jobs:
         run: |
           this is not
 
-      - name: Status
-        if: steps.build.status != 'success'
-        run: |
-          echo "Build succeeded"
-
       - name: Report status
+        if: steps.build.status != 'success'
         uses: actions/github-script@v5
-        id: find-issue
         with:
           script: |
-            const title = '⚠️ Nightly Build failed ⚠️'
+            const title = '⚠️ Nightly build failed ⚠️'
             const creator = 'github-actions[bot]'
             const issueLabel = 'CI'
             const workflow_url = `https://github.com/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`
@@ -46,7 +41,7 @@ jobs:
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: issue.number,
-                  body: `${workflow_url}`,
+                  body: issue_body,
                 })
                 core.info(`Updated an existing issue: ${issue.number}.`)
                 foundIssue = true
