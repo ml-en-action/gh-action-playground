@@ -13,7 +13,7 @@ jobs:
         id: build
         continue-on-error: true
         run: |
-          this is not
+          echo "Building..."
 
       - name: Report status
         if: steps.build.status != 'success'
