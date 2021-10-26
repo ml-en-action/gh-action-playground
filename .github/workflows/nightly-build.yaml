@@ -9,3 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Find issues
+        uses: actions/github-script@v5
+        id: find-issue
+        with:
+          script: |
+            const issues = await github.rest.issues.list({owner: context.repo.owner, repo: context.repo.repo})
+            core.info(`Issues: ${issues}`)
