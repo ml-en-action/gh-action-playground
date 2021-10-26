@@ -9,15 +9,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Conda
+        id: conda
+        continue-on-error: true
+        run: |
+          this is a test
       - name: Test
         id: build
         continue-on-error: true
         run: |
           echo "Building..."
-          this is a failure
 
       - name: Report status
-        if: steps.build.outcome != 'success'
+        if: steps.build.outcome != 'success' || steps.conda.outcome != 'success'
         uses: actions/github-script@v5
         with:
           script: |
@@ -25,7 +29,7 @@ jobs:
             const creator = 'github-actions[bot]'
             const issueLabel = 'CI'
             const workflow_url = `https://github.com/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`
-            const issue_body = `[Workflow Run URL](${workflow_url})\n---\nCc @andersy005`
+            const issue_body = `[Workflow Run URL](${workflow_url})\n\n---\n\nCc @andersy005`
 
             let foundIssue = false
             const issues = await github.rest.issues.listForRepo({
