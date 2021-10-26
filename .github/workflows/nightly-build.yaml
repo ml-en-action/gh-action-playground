@@ -24,7 +24,7 @@ jobs:
             const creator = 'github-actions[bot]'
             const issueLabel = 'CI'
             const workflow_url = `https://github.com/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`
-            const issue_body = `[Workflow Run URL](${workflow_url})`
+            const issue_body = `[Workflow Run URL](${workflow_url})\n---\nCc @andersy005`
 
             let foundIssue = false
             const issues = await github.rest.issues.listForRepo({
