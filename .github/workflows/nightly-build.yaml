@@ -16,7 +16,7 @@ jobs:
           echo "Building..."
 
       - name: Report status
-        if: steps.build.status != 'success'
+        if: steps.build.outcome != 'success'
         uses: actions/github-script@v5
         with:
           script: |
