@@ -14,10 +14,11 @@ jobs:
         id: find-issue
         with:
           script: |
-            const author = 'andersy005'
+            const creator = 'andersy005'
+            const issueLabel = 'CI'
             const issues = await github.rest.issues.listForRepo({owner: context.repo.owner, repo: context.repo.repo})
             for (let issue of issues.data) {
-              if (issue.user.login === author && issue.state === 'open') {
+              if (issue.user.login === creator && issue.state === 'open' && issue.labels.some(label => label.name === issueLabel)) {
                 core.info(`${issue.number} - ${issue.state} - ${issue.title} - ${issue.body} - ${issue.user.login}`)
               }
             }
