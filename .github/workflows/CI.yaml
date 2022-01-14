@@ -29,7 +29,6 @@ jobs:
         shell: bash -l {0}
     if: |
       ${{ needs.pre-job.outputs.should_skip != 'true' }}
-      && github.repository == 'ml-en-action/gh-action-playground'
     steps:
       - uses: actions/checkout@v2
       - name: Building Book
