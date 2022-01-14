@@ -24,7 +24,6 @@ jobs:
     needs: skip_duplicate_jobs
     if: |
       ${{ needs.skip_duplicate_jobs.outputs.should_skip != 'true' }}
-      && github.repository == 'ml-en-action/gh-action-playground'
     runs-on: ubuntu-latest
     defaults:
       run:
