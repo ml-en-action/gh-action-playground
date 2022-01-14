@@ -22,8 +22,7 @@ jobs:
 
   build-pr:
     needs: skip_duplicate_jobs
-    if: |
-      ${{ needs.skip_duplicate_jobs.outputs.should_skip != 'true' }}
+    if: ${{ needs.skip_duplicate_jobs.outputs.should_skip != 'true' }}
     runs-on: ubuntu-latest
     defaults:
       run:
