@@ -6,16 +6,30 @@ on:
   pull_request:
   workflow_dispatch:
 
-concurrency:
-  group: ${{ github.ref }}
-  cancel-in-progress: true
 jobs:
+  pre-job:
+    runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+    steps:
+      - id: skip_check
+        uses: fkirc/skip-duplicate-actions@v3.4.0
+        with:
+          concurrent_skipping: 'same_content'
+          skip_after_successful_duplicate: 'false'
+          do_not_skip: '["pull_request", "schedule", "workflow_dispatch"]'
+          paths_ignore: '["**/doc/**", "**/setup.cfg"]'
+
   build-pr:
+    needs:
+      - pre-job
     runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash -l {0}
-    if: github.repository == 'ml-en-action/gh-action-playground'
+    if: |
+      ${{ needs.pre-job.outputs.should_skip != 'true' }}
+      && github.repository == 'ml-en-action/gh-action-playground'
     steps:
       - uses: actions/checkout@v2
       - name: Building Book
