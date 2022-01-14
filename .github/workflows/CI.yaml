@@ -21,8 +21,7 @@ jobs:
           paths_ignore: '["**/doc/**", "**/setup.cfg"]'
 
   build-pr:
-    needs:
-      - pre-job
+    needs: pre-job
     if: |
       ${{ needs.pre-job.outputs.should_skip != 'true' }}
       && github.repository == 'ml-en-action/gh-action-playground'
