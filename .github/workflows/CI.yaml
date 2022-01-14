@@ -14,11 +14,12 @@ jobs:
     steps:
       - id: skip_check
         # fkirc/skip-duplicate-actions@v3.4.0 (plus a bit)
-        uses: fkirc/skip-duplicate-actions@f75dd6564bb646f95277dc8c3b80612e46a4a1ea
+        uses: fkirc/skip-duplicate-actions@3.4.1
         with:
           # For workflows which are triggered concurrently with the same
           # contents, attempt to execute them exactly once.
           concurrent_skipping: 'same_content_newer'
+          paths_ignore: '["**/setup.cfg"]'
 
   build-pr:
     needs: skip_duplicate_jobs
