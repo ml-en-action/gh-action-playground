@@ -7,23 +7,23 @@ on:
   workflow_dispatch:
 
 jobs:
-  pre-job:
+  skip_duplicate_jobs:
     runs-on: ubuntu-latest
     outputs:
       should_skip: ${{ steps.skip_check.outputs.should_skip }}
     steps:
       - id: skip_check
-        uses: fkirc/skip-duplicate-actions@master
+        # fkirc/skip-duplicate-actions@v3.4.0 (plus a bit)
+        uses: fkirc/skip-duplicate-actions@f75dd6564bb646f95277dc8c3b80612e46a4a1ea
         with:
+          # For workflows which are triggered concurrently with the same
+          # contents, attempt to execute them exactly once.
           concurrent_skipping: 'same_content_newer'
-          skip_after_successful_duplicate: 'false'
-          do_not_skip: '["schedule", "workflow_dispatch"]'
-          paths_ignore: '["**/doc/**", "**/setup.cfg"]'
 
   build-pr:
-    needs: pre-job
+    needs: skip_duplicate_jobs
     if: |
-      ${{ needs.pre-job.outputs.should_skip != 'true' }}
+      ${{ needs.skip_duplicate_jobs.outputs.should_skip != 'true' }}
       && github.repository == 'ml-en-action/gh-action-playground'
     runs-on: ubuntu-latest
     defaults:
