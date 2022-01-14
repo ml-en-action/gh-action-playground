@@ -33,5 +33,6 @@ jobs:
       - uses: actions/checkout@v2
       - name: Building Book
         run: |
+          echo ${{ needs.pre-job.outputs.should_skip }}
           echo "Building Book"
           sleep 10
