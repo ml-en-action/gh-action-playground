@@ -1,4 +1,4 @@
-name: build-pr
+name: CI
 
 # Only run this when the master branch changes
 on:
