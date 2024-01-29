@@ -65,9 +65,9 @@ jobs:
         if: steps.find-pull-request.outputs.number != ''
         id: fc
         with:
-          issue-number: '${{ steps.find-pull-request.outputs.number }}'
-          comment-author: 'github-actions[bot]'
-          body-includes: '${{ env.comment_message }}'
+          issue-number: "${{ steps.find-pull-request.outputs.number }}"
+          comment-author: "github-actions[bot]"
+          body-includes: "${{ env.comment_message }}"
 
       - name: Create comment
         if: |
