@@ -2,9 +2,9 @@ name: CI
 
 # Only run this when the master branch changes
 on:
-  push:
+  # push:
   pull_request:
-  workflow_dispatch:
+  # workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -13,7 +13,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request' || github.event_name == 'push'
+    # if: github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request' || github.event_name == 'push'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -39,7 +39,7 @@ jobs:
             echo "Branch Name: ${GITHUB_REF##*/}"
           fi
           touch test.txt
-          echo 'testing-1' > test.txt
+          echo 'testing-2' > test.txt
 
       - name: Commit and Push
         run: |
