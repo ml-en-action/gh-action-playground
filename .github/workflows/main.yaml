@@ -19,5 +19,5 @@ jobs:
         # Your deployment steps go here
 
     environment:
-      name: ${{ github.head_ref }}
+      name: ${{ github.ref == 'refs/heads/main' && 'production' || github.ref }}
       url: https://examples.com/${{ github.head_ref }}/mycatalog
