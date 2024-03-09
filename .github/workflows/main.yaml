@@ -42,7 +42,7 @@ jobs:
           fi
           touch test.txt
           echo 'testing-3' > test.txt
-         
+
       - name: Git info
         run: |
           echo "Listing all remote repositories:"
