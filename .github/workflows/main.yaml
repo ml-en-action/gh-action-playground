@@ -49,12 +49,12 @@ jobs:
           git diff --staged --exit-code --quiet || {
             git commit -m "Auto-update test.txt"
             # Determine the branch to push to
-            BRANCH_NAME=${{ github.head_ref }}
-            if [ -z "$BRANCH_NAME" ]; then
-              BRANCH_NAME=${{ github.ref }}
+            if [[ ${{ github.event_name }} == 'pull_request' ]]; then
+              BRANCH_NAME=${{ github.head_ref }}
+            else
+              BRANCH_NAME=${GITHUB_REF##*/}
             fi
-            # Extract branch name if in refs/heads/branch-name format
-            BRANCH_NAME=${BRANCH_NAME#refs/heads/}
             echo "Branch Name: ${BRANCH_NAME}"
             git push origin $BRANCH_NAME
           }
+
