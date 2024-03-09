@@ -35,7 +35,7 @@ jobs:
 
       - name: Pull Remote Changes
         run: |
-          git pull origin ${{ github.head_ref }}
+          git pull origin ${{ github.head_ref }} --rebase
 
       - name: print env
         run: |
