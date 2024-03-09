@@ -35,6 +35,8 @@ jobs:
 
       - name: print env
         run: |
+          git fetch all
+          git pull
           if [[ ${{ github.event_name }} == 'pull_request' ]]; then
             echo "Branch Name: ${{ github.head_ref }}"
           else
