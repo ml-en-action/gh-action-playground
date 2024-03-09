@@ -42,7 +42,7 @@ jobs:
           fi
           touch test.txt
           echo 'testing-2' > test.txt
-         
+
       - name: Git info
         run: |
           echo "Listing all remote repositories:"
@@ -56,7 +56,6 @@ jobs:
 
           echo "Listing all branches (local + remote):"
           git branch -a
-
 
       - name: Commit and Push
         run: |
