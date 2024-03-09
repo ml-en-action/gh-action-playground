@@ -33,6 +33,10 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Pull Remote Changes
+        run: |
+          git pull origin ${{ github.head_ref }}
+
       - name: print env
         run: |
 
@@ -47,19 +51,7 @@ jobs:
           touch test.txt
           echo 'testing-3' > test.txt
 
-      - name: Git info
-        run: |
-          echo "Listing all remote repositories:"
-          git remote -v
-
-          echo "Listing all local branches:"
-          git branch
-
-          echo "Listing all remote branches:"
-          git branch -r
-
-          echo "Listing all branches (local + remote):"
-          git branch -a
+      
 
       - name: push
         uses: github-actions-x/commit@v2.9
