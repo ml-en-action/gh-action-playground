@@ -35,7 +35,7 @@ jobs:
 
       - name: print env
         run: |
-          
+
           if [[ ${{ github.event_name }} == 'pull_request' ]]; then
             BRANCH_NAME=${{ github.head_ref }}
             echo "Branch Name: ${{ github.head_ref }}"
