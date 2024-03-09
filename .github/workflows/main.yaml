@@ -43,7 +43,7 @@ jobs:
             BRANCH_NAME=${GITHUB_REF##*/}
             echo "Branch Name: ${GITHUB_REF##*/}"
           fi
-          git pull origin $BRANCH_NAME
+          
           touch test.txt
           echo 'testing-3' > test.txt
 
