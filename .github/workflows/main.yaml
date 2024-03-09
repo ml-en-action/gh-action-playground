@@ -39,7 +39,7 @@ jobs:
             echo "Branch Name: ${GITHUB_REF##*/}"
           fi
           touch test.txt
-          echo 'testing' > testing.txt
+          echo 'testing-1' > test.txt
 
       - name: Commit and Push
         run: |
