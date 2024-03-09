@@ -57,20 +57,31 @@ jobs:
           echo "Listing all branches (local + remote):"
           git branch -a
 
-      - name: Commit and Push
-        run: |
-          git config --global user.email "noreply@github.com"
-          git config --global user.name "github-actions"
-          git add test.txt
-          git diff --staged --exit-code --quiet || {
-            git commit -m "Auto-update test.txt"
-            echo "Event Name: ${{ github.event_name }}"
-            if [[ ${{ github.event_name }} == 'pull_request' ]]; then
-              BRANCH_NAME=${{ github.head_ref }}
-            else
-              BRANCH_NAME=${GITHUB_REF##*/}
-            fi
-            echo "Set Branch Name to: ${BRANCH_NAME}"
-            echo "Pushing to Branch: ${BRANCH_NAME}"
-            git push origin $BRANCH_NAME
-          }
+      - name: push
+        uses: github-actions-x/commit@v2.9
+        with:
+          # github-token: ${{ secrets.GITHUB_TOKEN }}
+          push-branch: ${{ github.head_ref }}
+          commit-message: 'Auto-update test.txt'
+          # force-add: 'true'
+          files: test.txt
+          name: github-actions
+          email: noreply@github.com
+
+      # - name: Commit and Push
+      #   run: |
+      #     git config --global user.email "noreply@github.com"
+      #     git config --global user.name "github-actions"
+      #     git add test.txt
+      #     git diff --staged --exit-code --quiet || {
+      #       git commit -m "Auto-update test.txt"
+      #       echo "Event Name: ${{ github.event_name }}"
+      #       if [[ ${{ github.event_name }} == 'pull_request' ]]; then
+      #         BRANCH_NAME=${{ github.head_ref }}
+      #       else
+      #         BRANCH_NAME=${GITHUB_REF##*/}
+      #       fi
+      #       echo "Set Branch Name to: ${BRANCH_NAME}"
+      #       echo "Pushing to Branch: ${BRANCH_NAME}"
+      #       git push origin $BRANCH_NAME
+      #     }
