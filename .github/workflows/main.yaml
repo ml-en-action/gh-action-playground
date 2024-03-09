@@ -41,8 +41,8 @@ jobs:
             echo "Branch Name: ${GITHUB_REF##*/}"
           fi
           touch test.txt
-          echo 'testing-2' > test.txt
-
+          echo 'testing-3' > test.txt
+         
       - name: Git info
         run: |
           echo "Listing all remote repositories:"
@@ -64,12 +64,14 @@ jobs:
           git add test.txt
           git diff --staged --exit-code --quiet || {
             git commit -m "Auto-update test.txt"
-            # Determine the branch to push to
+            echo "Current Branch:"
+            git branch
             if [[ ${{ github.event_name }} == 'pull_request' ]]; then
               BRANCH_NAME=${{ github.head_ref }}
             else
               BRANCH_NAME=${GITHUB_REF##*/}
             fi
-            echo "Branch Name: ${BRANCH_NAME}"
+            echo "Resolved Branch Name: ${BRANCH_NAME}"
+            echo "Pushing to Branch: ${BRANCH_NAME}"
             git push origin $BRANCH_NAME
           }
