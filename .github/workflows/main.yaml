@@ -19,3 +19,18 @@ jobs:
           else
             echo "Branch Name: ${GITHUB_REF##*/}"
           fi
+  update:
+     needs: build
+     runs-on: ubuntu-latest
+     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: print env
+        run: |
+          if [[ ${{ github.event_name }} == 'pull_request' ]]; then
+            echo "Branch Name: ${{ github.head_ref }}"
+          else
+            echo "Branch Name: ${GITHUB_REF##*/}"
+          fi
+
