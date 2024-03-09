@@ -13,6 +13,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -38,7 +39,7 @@ jobs:
             echo "Branch Name: ${GITHUB_REF##*/}"
           fi
           touch test.txt
-          echo 'testing' > test.txt
+          echo 'testing' > testing.txt
 
       - name: Commit and Push
         run: |
