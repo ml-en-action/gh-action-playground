@@ -7,12 +7,19 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  deploy:
+    name: Deploy App
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: print env
-        run: |
-          echo ${{ github.pull_request.head.ref }}
-          echo ${{ github.ref }}
+      - name: Set URL based on branch name
+        run: echo "ENV_URL=examples.com/${{ github.head_ref }}/test.com" >> $GITHUB_ENV
+
+      - name: Deploy
+        run: echo "Deploying to $ENV_URL"
+        # Your deployment steps go here
+
+    environment:
+      name: ${{ github.head_ref }}
+      url: ${{ env.ENV_URL }}
