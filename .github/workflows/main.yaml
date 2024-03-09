@@ -74,4 +74,3 @@ jobs:
             echo "Pushing to Branch: ${BRANCH_NAME}"
             git push origin $BRANCH_NAME
           }
-
