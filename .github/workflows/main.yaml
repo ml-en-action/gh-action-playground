@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Set URL based on branch name
-        run: echo "ENV_URL=examples.com/${{ github.head_ref }}/test.com" >> $GITHUB_ENV
+        run: echo "ENV_URL=https://examples.com/${{ github.head_ref }}/mycatalog" >> $GITHUB_ENV
 
       - name: Deploy
         run: echo "Deploying to $ENV_URL"
