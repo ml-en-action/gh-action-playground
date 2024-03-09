@@ -35,12 +35,15 @@ jobs:
 
       - name: print env
         run: |
-          git pull
+          
           if [[ ${{ github.event_name }} == 'pull_request' ]]; then
+            BRANCH_NAME=${{ github.head_ref }}
             echo "Branch Name: ${{ github.head_ref }}"
           else
+            BRANCH_NAME=${GITHUB_REF##*/}
             echo "Branch Name: ${GITHUB_REF##*/}"
           fi
+          git pull origin $BRANCH_NAME
           touch test.txt
           echo 'testing-3' > test.txt
 
