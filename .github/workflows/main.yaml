@@ -19,5 +19,5 @@ jobs:
         # Your deployment steps go here
 
     environment:
-      name: ${{ github.ref == 'refs/heads/main' && 'production' || github.ref }}
-      url: https://examples.com/${{ github.head_ref }}/mycatalog
+      name: ${{ github.ref == 'refs/heads/main' && 'production' || github.head_ref }}
+      url: ${{ github.ref == 'refs/heads/main' && 'https://leap-data-catalog.vercel.app/?catalog=https://raw.githubusercontent.com/leap-stc/data-management/main/catalog/datasets/consolidated-web-catalog.json' || format('https://leap-data-catalog.vercel.app/?catalog=https://raw.githubusercontent.com/leap-stc/data-management/{0}/catalog/datasets/consolidated-web-catalog.json', github.head_ref) }}
