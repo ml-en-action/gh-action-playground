@@ -2,9 +2,7 @@ name: CI
 
 # Only run this when the master branch changes
 on:
-  push:
   pull_request:
-  workflow_dispatch:
 
 jobs:
   deploy:
@@ -22,4 +20,4 @@ jobs:
 
     environment:
       name: ${{ github.head_ref }}
-      url: ${{ env.ENV_URL }}
+      url: https://examples.com/${{ github.head_ref }}/mycatalog
